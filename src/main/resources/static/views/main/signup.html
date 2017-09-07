@@ -1,0 +1,66 @@
+
+<div class="login-box">
+    <h3 class="login_welcome">欢迎注册</h3>
+    <div class="right_login" style="border:none;z-index: 9999">
+        <div>
+            <form id="login_form">
+                <div>
+                    <div class="login-item">
+                        <span class="span_user glyphicon glyphicon-user "></span>
+                        <input type="email" class="form-input" id="user" maxlength="21" placeholder="邮箱"
+                               name="userName" value="">
+                    </div>
+                </div>
+                <div>
+                    <div class="login-item">
+                        <span class="span_user glyphicon glyphicon-lock"></span>
+                        <input type="password" class="form-input" id="password" maxlength="18" placeholder="密码"
+                               name="password" value="">
+                    </div>
+                </div>
+                <div>
+                    <div class="login-item">
+                        <span class="span_user glyphicon glyphicon-lock"></span>
+                        <input type="password" class="form-input" id="re_password" maxlength="18" placeholder="确认密码"
+                               name="password" value="">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="login-radio">
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadioOptions" id="radio1" value="applicant"> 求职用户
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadioOptions" id="radio2" value="company"> 企业用户
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadioOptions" id="radio3" value="admin"> 管理员
+                        </label>
+                    </div>
+                </div>
+
+                <input type="button" id="register_b" class="formBtn-login" value="注 册"/>
+                <div>
+                    <p style="text-align: center"><a href="/">点 我 登 录</a>
+                    </p>
+                </div>
+
+            </form>
+        </div>
+        <div class="clear"></div>
+        <div class="errorMsg" hidden>
+
+            <center>
+                <div class="ts"><img src="/images/ts.png">
+                </div>
+            </center>
+
+            <!-- <div class="forgotpassword">
+                 <a href="#" onclick="link()">忘记密码？</a>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript" src="/js/main.js"></script>

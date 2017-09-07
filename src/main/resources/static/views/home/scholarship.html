@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+
+<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+
+<div class="row search">
+    <div class="col-md-6">
+        <form action="" method="post">
+            <div class="input-group" style="width: 300px">
+                <input type="text" class="form-control" id="queryName"
+                       placeholder="请输入要查询内容..."> <span class="input-group-btn">
+					<button class="btn btn-default" onclick="return queryEquipment()">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;查询
+					</button>
+				</span>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 alert alert-success alert-dismissable text-center" id="total"
+         style="margin-bottom:10px;"></div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-primary" style="float: right;"
+                data-toggle="modal" id="add_too">继续添加
+        </button>
+    </div>
+</div>
+<div>
+    <table class="table table-hover  table-bordered table-striped"
+           style="margin-bottom: 0px;">
+        <thead>
+        <tr>
+            <th class="col-md-1">奖学金编号</th>
+            <th class="col-md-1">来源</th>
+            <th class="col-md-1">等级</th>
+            <th class="col-md-1">获得时间</th>
+            <th class="col-md-1">操作</th>
+        </tr>
+        </thead>
+        <tbody id="equList1"></tbody>
+    </table>
+</div>
+<br>
+<div>
+    <table class="table table-hover  table-bordered table-striped"
+           style="margin-bottom: 0px;">
+        <thead>
+        <tr>
+            <th class="col-md-1">比赛获奖编号</th>
+            <th class="col-md-1">比赛名称</th>
+            <th class="col-md-1">等级</th>
+            <th class="col-md-1">获得时间</th>
+            <th class="col-md-1">操作</th>
+        </tr>
+        </thead>
+        <tbody id="equList2"></tbody>
+    </table>
+</div>
+<div id="pagination">
+    <div class="col-md-5 col-md-offset-3">
+        <ul class="pagination"></ul>
+    </div>
+    <div class="btn-group col-md-3" style="margin-top:20px">
+        <button type="button" class="btn btn-default" value="10" onclick="changePageSize(this)">10</button>
+        <button type="button" class="btn btn-default" value="20" onclick="changePageSize(this)">20</button>
+        <button type="button" class="btn btn-default" value="50" onclick="changePageSize(this)">50</button>
+        <button type="button" class="btn btn-default" value="100" onclick="changePageSize(this)">100</button>
+    </div>
+    <input type="text" id="currentPage" style="display:none" value="1"></input>
+    <input type="text" id="pageSize" style="display:none" value="10"></input>
+</div>
+<!-- 添加模态框 -->
+<form class="form-horizontal" id="createForm" style="margin: 20px;">
+    <div class="modal fade" id="createEquipment" tabindex="-1"
+         role="dialog" aria-labelledby="createModalLabel" aria-hidden="true"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="crdateModalLabel">添加奖励</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="flag" class="col-md-4 control-label">奖励类别</label>
+                        <div class="col-md-6">
+                            <select class="form-control" id="flag">
+                                <option value="a">奖学金</option>
+                                <option value="b">比赛</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-md-4 control-label">名称</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="请输入名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="level" class="col-md-4 control-label">等级</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="level" name="name"
+                                   placeholder="请输入等级">
+                        </div>
+                    </div>
+
+                    <div id="datetimepicker" class="form-group">
+                        <!-- Text input-->
+                        <label for="start" class="col-md-4 control-label">获得时间</label>
+                        <div class="col-md-6">
+                            <input type="text" name="time" class="form-control" id="start" placeholder="点击下方小日历选择日期"
+                                   class="input-xlarge"/>
+                            <span class="add-on">
+                                <i class="glyphicon glyphicon-calendar" data-time-icon="icon-time"
+                                   data-date-icon="icon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="text-align:center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="back">取消
+                    </button>
+                    <button type="button" class="btn btn-default" id="add_r">添加</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+</form>
+
+<script type="text/javascript">
+
+    var temSc = new Array();
+    var temMa = new Array();
+
+
+
+    $(function () {
+        pagehtml($("#currentPage").val());
+    });
+
+    $('#start').datetimepicker({
+        minView: "month",
+        format: "yyyy-mm-dd",
+        autoclose: true
+    });
+    //添加设备
+    $("#add_r").click(function () {
+        var flag = $.trim($("#flag").val());
+        var name = $.trim($("#name").val());
+        var level = $.trim($("#level").val());
+        var start = $.trim($("#start").val());
+
+        if (!flag || !name) {
+            alert("填写信息不完整！");
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+                    if (flag == "a") {
+                        $.ajax({
+                            url: "/addScholarship",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                "token": token,
+                                "source": name,
+                                "level": level,
+                                "time": start
+                            },
+                            success: function (data) {
+                                if (data.status == 200) {
+                                    $("#back").trigger("click");
+                                    alert("添加成功!");
+                                    pagehtml($("#currentPage").val());
+                                } else {
+                                    alert("游客身份不能添加！");
+                                }
+
+                            },
+                            error: function () {
+                                alert("添加出错!");
+                            }
+
+                        });
+                    } else if (flag == "b") {
+                        $.ajax({
+                            url: "/addMatch",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                "token": token,
+                                "name": name,
+                                "level": level,
+                                "time": start
+                            },
+                            success: function (data) {
+                                if (data.status == 200) {
+                                    $("#back").trigger("click");
+                                    alert("添加成功!");
+                                    pagehtml($("#currentPage").val());
+                                } else {
+                                    alert("游客身份不能添加！");
+                                }
+
+                            },
+                            error: function () {
+                                alert("添加出错!");
+                            }
+
+                        });
+                    }
+
+
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    });
+
+    //分页
+    function pagehtml(pageNo) {
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/scholarships",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token},
+                        success: function (data) {
+                            $("#total").html("当前共有" + data.data.length + "条信息");
+                            $("#equList1").empty();
+                            if (data.data == "") {
+                                $("#equList1").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+                                $("#pagination").hide();
+                                return false;
+                            } else {
+                                $.each(data.data, function (j, val) {
+                                    temSc[j] = val.scholarshipId;
+                                    var date1 = new Date(val.time);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.scholarshipId
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.source
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.level
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>";
+                                    html += "<td><button type='button' class='btn btn-info btn-xs' onclick='return update2(" + j + ")'>"
+                                        + "修改"
+                                        + "</button>"
+                                        + "&nbsp;&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='return rm1(" + j + ")'>"
+                                        + "删除"
+                                        + "</button>"
+                                        + "</td></tr>>";
+                                    $("#equList1").append(html);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+
+                    $.ajax({
+                        url: "/matches",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token},
+                        success: function (data) {
+                            $("#total").html("当前共有" + data.data.length + "条信息");
+                            $("#equList2").empty();
+                            if (data.data == "") {
+                                $("#equList").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+                                $("#pagination").hide();
+                                return false;
+                            } else {
+                                $.each(data.data, function (j, val) {
+                                    temMa[j] = val.matchId;
+                                    var date1 = new Date(val.time);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.matchId
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.level
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>";
+                                    html += "<td><button type='button' class='btn btn-info btn-xs' onclick='return update2(" + j + ")'>"
+                                        + "修改"
+                                        + "</button>"
+                                        + "&nbsp;&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='return rm2(" + j + ")'>"
+                                        + "删除"
+                                        + "</button>"
+                                        + "</td></tr>>";
+                                    $("#equList2").append(html);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    }
+
+    $("#add_too").click(function () {
+//            $("#main").load("/views/home/scholarship.html");
+            $('#createEquipment').modal()
+        }
+    );
+
+    //查询设备
+    function queryEquipment() {
+        //不管name是否为空，使得搜索条件为空时，查询所有
+        pagehtml(1);
+        return false;
+    }
+
+    //切换每页显示数据数
+    function changePageSize(obj) {
+        var pageSize = obj.value;
+        $("#pageSize").val(pageSize);
+        pagehtml(1);
+    }
+
+    // 删除
+    function rm1(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/deleteScholarship",
+                        type: "POST",
+                        data: {
+                            "token": token,
+                            "scholarshipId": temSc[equipmentId]
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alert("删除成功！");
+                                pagehtml($("#currentPage").val());
+                            } else {
+                                alert("删除失败！");
+                            }
+                        },
+                        error: function () {
+                            alert("删除错误");
+                        },
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+        return false;
+    }
+
+    function update1(j) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $("#main").load("/views/home/scholarship.html");
+
+        return false
+    }
+
+    // 删除
+    function rm2(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/deleteMatch",
+                        type: "POST",
+                        data: {
+                            "token": token,
+                            "matchId": temMa[equipmentId]
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alert("删除成功！");
+                                pagehtml($("#currentPage").val());
+                            } else {
+                                alert("删除失败！");
+                            }
+                        },
+                        error: function () {
+                            alert("删除错误");
+                        },
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+        return false;
+    }
+
+    function update2(j) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $("#main").load("/views/home/scholarship.html");
+
+        return false
+    }
+
+</script>
+
+
+</html>

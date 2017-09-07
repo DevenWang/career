@@ -1,0 +1,74 @@
+<!-- data-spy="affix" -->
+<ul id="main-nav" class="nav nav-tabs nav-stacked ">
+    <li class="active" style="margin: 0" id="home">
+        <a><i class="glyphicon glyphicon-th-large"></i> 首页</a>
+    </li>
+
+    <li style="margin: 0" id="equipmentMenu">
+        <a href="#systemSetting" class="nav-header collapsed" data-toggle="collapse">
+            <i class="glyphicon glyphicon-cog"></i> 所有招聘
+            <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+        </a>
+        <ul id="systemSetting" class="nav nav-list collapse secondmenu" style="height: 0px;">
+            <li><a href="javascript:allRecruitment()"><i class="glyphicon glyphicon-th-list"></i>所有招聘</a></li>
+            <li><a href="javascript:myApply()"><i class="glyphicon glyphicon-heart"></i>我的投递</a></li>
+        </ul>
+    </li>
+
+    <li style="margin: 0" id="repairMenu">
+        <a href="#repair" class="nav-header collapsed" data-toggle="collapse">
+            <i class="glyphicon glyphicon-cog"></i> 我的简历
+            <span class="pull-right glyphicon glyphicon-chevron-down"></span></a>
+
+        <ul id="repair" class="nav nav-list collapse secondmenu" style="height: 0px;">
+            <li><a href="javascript:myBaseInfo()"><i class="glyphicon glyphicon-user"></i>基本信息 </a></li>
+            <li><a href="javascript:myEducation()"><i class="glyphicon glyphicon-education"></i>教育经历 </a></li>
+            <li><a href="javascript:myScholarship()"><i class="glyphicon glyphicon-bookmark"></i>获奖经历 </a></li>
+            <li><a href="javascript:myPractice()"><i class="glyphicon glyphicon-book"></i>项目经历 </a></li>
+            <li><a href="javascript:myWork()"><i class="glyphicon glyphicon-send"></i>工作经历 </a></li>
+            <li><a href="javascript:otherInfo()"><i class="glyphicon glyphicon-fullscreen"></i>其他信息 </a></li>
+        </ul>
+    </li>
+
+    <li style="margin: 0" id="companyMenu">
+        <a href="#account" class="nav-header collapsed" data-toggle="collapse">
+            <i class="glyphicon glyphicon-cog"></i> 招聘信息管理
+            <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+        </a>
+        <ul id="account" class="nav nav-list collapse secondmenu" style="height: 0px;">
+            <li><a href="javascript:addRecruitMent()"><i class="glyphicon glyphicon-user"></i>添加招聘信息</a></li>
+            <li><a href="javascript:myRecruit()"><i class="glyphicon glyphicon-th-list"></i>管理招聘信息</a></li>
+            <li><a href="javascript:allApply()"><i class="glyphicon glyphicon-th-list"></i>查看投递信息</a></li>
+        </ul>
+    </li>
+</ul>
+<script type="text/javascript">
+
+    var type = "";
+    var token = "";
+    var userId = "";
+    $.ajax({
+        type: "GET",
+        url: "/info",
+        dataType: "json",
+        success: function (resp) {
+            if (resp.status != 200) {
+                alert(resp.msg)
+            } else {
+                type = resp.data.type;
+                token = resp.data.token;
+                userId = resp.data.userId;
+                if (type != "company"){
+                    $("#companyMenu").hide();
+                }
+
+            }
+        },
+        error: function (resp) {
+            alert("访问出错！")
+        }
+    });
+
+</script>
+
+<script src="/js/main.js"></script>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8"/>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+
+<div class="row search">
+    <div class="col-md-6">
+        <form action="" method="post">
+            <div class="input-group" style="width: 300px">
+                <input type="text" class="form-control" id="queryName"
+                       placeholder="请输入公司名称..."> <span class="input-group-btn">
+					<button class="btn btn-default" onclick="return queryEquipment()">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;查询
+					</button>
+				</span>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 alert alert-success alert-dismissable text-center" id="total"
+         style="margin-bottom:10px;"></div>
+    <div class="col-md-4">
+    </div>
+</div>
+<div>
+    <table class="table table-hover  table-bordered table-striped"
+           style="margin-bottom: 0px;">
+        <thead>
+        <tr>
+            <th class="col-md-1">序号</th>
+            <th class="col-md-1">公司名称</th>
+            <th class="col-md-1">招聘岗位</th>
+            <th class="col-md-2">投递链接</th>
+            <th class="col-md-2">截止时间</th>
+            <th class="col-md-2">投递时间</th>
+            <th class="col-md-2">操作</th>
+        </tr>
+        </thead>
+        <tbody id="equList"></tbody>
+    </table>
+</div>
+<div id="pagination">
+    <div class="col-md-5 col-md-offset-3">
+        <ul class="pagination"></ul>
+    </div>
+    <div class="btn-group col-md-3" style="margin-top:20px">
+        <button type="button" class="btn btn-default" value="10" onclick="changePageSize(this)">10</button>
+        <button type="button" class="btn btn-default" value="20" onclick="changePageSize(this)">20</button>
+        <button type="button" class="btn btn-default" value="50" onclick="changePageSize(this)">50</button>
+        <button type="button" class="btn btn-default" value="100" onclick="changePageSize(this)">100</button>
+    </div>
+    <input type="text" id="currentPage" style="display:none" value="1"></input>
+    <input type="text" id="pageSize" style="display:none" value="10"></input>
+</div>
+
+<script type="text/javascript">
+
+    var temMyList = new Array();
+
+    $(function () {
+        pagehtml($("#currentPage").val());
+    });
+
+    //分页
+    function pagehtml(pageNo) {
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/userApply",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token},
+                        success: function (data) {
+                            $("#total").html("当前共有" + data.data.length + "家公司");
+                            $("#equList").empty();
+                            if (data.data == "") {
+                                $("#equList").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+                                $("#pagination").hide();
+                                return false;
+                            } else {
+                                $.each(data.data, function (j, val) {
+                                    temMyList[j] = val.id;
+                                    var date1 = new Date(val.endTime);
+                                    var date2 = new Date(val.joinTime);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.id
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.post
+                                        + "</td>"
+                                        + "<td>"
+                                        + "<a href= \"#\" onclick= \"goVisit(" + val.address + ")\">" + val.address + "</a>"
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + date2.getFullYear() + "-" + date2.getMonth() + "-" + date2.getDate()
+                                        + "</td>";
+
+                                    html += "<td><button type='button' class='btn btn-info btn-xs' onclick='return removeApply(" + j + ")'>"
+                                        + "取消投递"
+                                        + "</button>"
+                                        + "</td></tr>>";
+                                    $("#equList").append(html);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    }
+
+    function goVisit(dest) {
+        window.open(dest);
+        location.href = "http://www.baidu.com";
+        alert(dest);
+    }
+
+    //查询设备
+    function queryEquipment() {
+        //不管name是否为空，使得搜索条件为空时，查询所有
+        pagehtml(1);
+        return false;
+    }
+
+
+    //切换每页显示数据数
+    function changePageSize(obj) {
+        var pageSize = obj.value;
+        $("#pageSize").val(pageSize);
+        pagehtml(1);
+    }
+
+    // 取消投递
+    function removeApply(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/deleteApply",
+                        type: "POST",
+                        data: {
+                            "applyId": temMyList[equipmentId],
+                            "token": token
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alert("取消成功！");
+                                pagehtml($("#currentPage").val());
+                            } else {
+                                alert("取消失败！");
+                            }
+                        },
+                        error: function () {
+                            alert("取消错误");
+                        },
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+        return false;
+    }
+</script>
+
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8"/>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+
+<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+
+<link rel="stylesheet" href="/css/bootstrap-chinese-region.css">
+<script type="text/javascript" src="/js/bootstrap-chinese-region.js"></script>
+
+<div class="row search">
+    <div class="col-md-6">
+        <form action="" method="post">
+            <div class="input-group" style="width: 300px">
+                <input type="text" class="form-control" id="queryName"
+                       placeholder="请输入查询信息..."> <span class="input-group-btn">
+					<button class="btn btn-default" onclick="return queryEquipment()">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;查询
+					</button>
+				</span>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 alert alert-success alert-dismissable text-center" id="total"
+         style="margin-bottom:10px;"></div>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-primary" style="float: right;"
+                data-toggle="modal" id="add_too">继续添加
+        </button>
+
+    </div>
+</div>
+<div>
+    <table class="table table-hover  table-bordered table-striped"
+           style="margin-bottom: 0px;">
+        <thead>
+        <tr>
+            <th class="col-md-1">编号</th>
+            <th class="col-md-1">英语等级</th>
+            <th class="col-md-1">等级分</th>
+            <th class="col-md-1">期望工作地点</th>
+            <th class="col-md-1">是否接受调剂</th>
+            <th class="col-md-1">操作</th>
+        </tr>
+        </thead>
+        <tbody id="equList"></tbody>
+    </table>
+</div>
+<div id="pagination">
+    <div class="col-md-5 col-md-offset-3">
+        <ul class="pagination"></ul>
+    </div>
+    <input type="text" id="currentPage" style="display:none" value="1"></input>
+    <input type="text" id="pageSize" style="display:none" value="10"></input>
+</div>
+<!-- 添加模态框 -->
+<form class="form-horizontal" id="createForm" style="margin: 20px;">
+    <div class="modal fade" id="createEquipment" tabindex="-1"
+         role="dialog" aria-labelledby="createModalLabel" aria-hidden="true"
+         data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="crdateModalLabel">添加其他信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="englishLevel" class="col-md-4 control-label">英语等级</label>
+                        <div class="col-md-6">
+                            <select class="form-control" id="englishLevel">
+                                <option value="英语四级">英语四级</option>
+                                <option value="英语六级">英语六级</option>
+                                <option value="雅思">雅思</option>
+                                <option value="托福">托福</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="english" class="col-md-4 control-label">分数</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="english"
+                                   value="" id="english" placeholder="请输入分数">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wCity" class="col-md-4 control-label">期待工作地点</label>
+                        <div class="col-md-6">
+                            <div class="bs-chinese-region3 flat dropdown" data-submit-type="id" data-min-level="1"
+                                 data-max-level="3">
+                                <input type="text" class="form-control" name="wCity" id="wCity"
+                                       data-toggle="dropdown" placeholder="请输入工作地点">
+                                <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <div>
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li role="presentation" class="active"><a href="#province" data-next="city"
+                                                                                      role="tab"
+                                                                                      data-toggle="tab">省份</a></li>
+                                            <li role="presentation"><a href="#city" data-next="district" role="tab"
+                                                                       data-toggle="tab">城市</a></li>
+                                            <li role="presentation"><a href="#district" data-next="street" role="tab"
+                                                                       data-toggle="tab">县区</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane active" id="province">--</div>
+                                            <div role="tabpanel" class="tab-pane" id="city">--</div>
+                                            <div role="tabpanel" class="tab-pane" id="district">--</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="swap" class="col-md-4 control-label">是否接受调剂</label>
+                        <div class="col-md-6">
+                            <select class="form-control" id="swap">
+                                <option value="是">是</option>
+                                <option value="否">否</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="text-align:center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="back">取消
+                        </button>
+                        <button type="button" class="btn btn-default" id="add_r">添加</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal -->
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+
+    var temOther = new Array();
+
+    $("#wCity").click(function () {
+        $.getJSON('/js/sql_areas.json', function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var area = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
+                data[i] = area;
+            }
+            $('.bs-chinese-region3').chineseRegion('source', data);
+        });
+    })
+
+    $(function () {
+        pagehtml($("#currentPage").val());
+
+    });
+
+    //分页
+    function pagehtml(pageNo) {
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+                    $.ajax({
+                        url: "/otherInfos",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token},
+                        success: function (data) {
+                            $("#total").html("当前共有" + data.data.length + "条信息");
+                            $("#equList").empty();
+                            if (data.data == "") {
+                                $("#equList").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+                                $("#pagination").hide();
+                                return false;
+                            } else {
+                                $.each(data.data, function (j, val) {
+                                    temOther[j] = val.otherInfoId;
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.otherInfoId
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.englishLevel
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.english
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.city
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.swap
+                                        + "</td>";
+                                    html += "<td><button type='button' class='btn btn-info btn-xs' onclick='return update(" + j + ")'>"
+                                        + "修改"
+                                        + "</button>"
+                                        + "&nbsp;&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='return rm(" + j + ")'>"
+                                        + "删除"
+                                        + "</button>"
+                                        + "</td></tr>>";
+                                    $("#equList").append(html);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    }
+
+    function goVisit(dest) {
+        window.open(dest);
+        location.href = "http://www.baidu.com";
+        alert(dest);
+    }
+
+    //查询设备
+    function queryEquipment() {
+        //不管name是否为空，使得搜索条件为空时，查询所有
+        pagehtml(1);
+        return false;
+    }
+
+
+    //切换每页显示数据数
+    function changePageSize(obj) {
+        var pageSize = obj.value;
+        $("#pageSize").val(pageSize);
+        pagehtml(1);
+    }
+
+
+    // 修改
+    function update(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $("#main").load("/views/home/otherInfo.html");
+        return false;
+    }
+
+    // 删除
+    function rm(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/deleteOtherInfo",
+                        type: "POST",
+                        data: {
+                            "otherInfoId": temOther[equipmentId],
+                            "token": token
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alert("删除成功！");
+                                pagehtml($("#currentPage").val());
+                            } else {
+                                alert("删除失败！");
+                            }
+                        },
+                        error: function () {
+                            alert("删除错误");
+                        },
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+        return false;
+    }
+
+    $("#add_too").click(function () {
+            $('#createEquipment').modal();
+        }
+    );
+
+    //添加设备
+    $("#add_r").click(function () {
+        var englishLevel = $.trim($("#englishLevel").val());
+        var english = $.trim($("#english").val());
+        var city = $.trim($("#wCity").val());
+        var swap = $.trim($("#swap").val());
+        if (!city || !swap) {
+            alert("填写信息不完整！");
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/addOtherInfo",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            "token": token,
+                            "city": city,
+                            "englishLevel": englishLevel,
+                            "swap": swap,
+                            "english": parseInt(english)
+                        },
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $("#back").trigger("click");
+                                alert("添加成功!");
+                                pagehtml($("#currentPage").val());
+                            } else {
+                                alert("游客身份不能添加！");
+                            }
+
+                        },
+                        error: function () {
+                            alert("添加出错!");
+                        }
+
+                    });
+
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    });
+
+
+</script>
+
+</html>
+

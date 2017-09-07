@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8"/>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+
+<div class="row search">
+    <div class="col-md-6">
+        <form action="" method="post">
+            <div class="input-group" style="width: 300px">
+                <input type="text" class="form-control" id="queryName"
+                       placeholder="请输入查询信息..."> <span class="input-group-btn">
+					<button class="btn btn-default" onclick="return queryEquipment()">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;查询
+					</button>
+				</span>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 alert alert-success alert-dismissable text-center" id="total"
+         style="margin-bottom:10px;"></div>
+    <div class="col-md-4">
+    </div>
+</div>
+<div>
+    <table class="table table-hover  table-bordered table-striped"
+           style="margin-bottom: 0px;">
+        <thead>
+        <tr>
+            <th class="col-md-1">姓名</th>
+            <th class="col-md-1">性别</th>
+            <th class="col-md-1">电话</th>
+            <th class="col-md-1">电子邮件</th>
+            <th class="col-md-1">投递岗位</th>
+            <th class="col-md-1">投递时间</th>
+            <th class="col-md-1">操作</th>
+        </tr>
+        </thead>
+        <tbody id="equList"></tbody>
+    </table>
+</div>
+<div id="pagination">
+    <div class="col-md-5 col-md-offset-3">
+        <ul class="pagination"></ul>
+    </div>
+    <div class="btn-group col-md-3" style="margin-top:20px">
+        <button type="button" class="btn btn-default" value="10" onclick="changePageSize(this)">10</button>
+        <button type="button" class="btn btn-default" value="20" onclick="changePageSize(this)">20</button>
+        <button type="button" class="btn btn-default" value="50" onclick="changePageSize(this)">50</button>
+        <button type="button" class="btn btn-default" value="100" onclick="changePageSize(this)">100</button>
+    </div>
+    <input type="text" id="currentPage" style="display:none" value="1"></input>
+    <input type="text" id="pageSize" style="display:none" value="10"></input>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        pagehtml($("#currentPage").val());
+    });
+
+    var tempMap = new Array();
+
+    //分页
+    function pagehtml(pageNo) {
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/companyApply",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token},
+                        success: function (data) {
+                            $("#total").html("当前共有" + data.data.length + "人申请");
+                            $("#equList").empty();
+                            if (data.data == "") {
+                                $("#equList").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+                                $("#pagination").hide();
+                                return false;
+                            } else {
+                                $.each(data.data, function (j, val) {
+                                    var date1 = new Date(val.joinTime);
+                                    tempMap[j] = val.userId;
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.userName
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.se
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.phone
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.email
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.post
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>";
+                                    html += "<td><button type='button' class='btn btn-info btn-xs' onclick='checkOne(" + j + ")'>"
+                                        + "查看简历"
+                                        + "</button>"
+                                        + "</td></tr>>";
+                                    $("#equList").append(html);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+
+    }
+
+    function goVisit(dest) {
+        window.open(dest);
+        location.href = "http://www.baidu.com";
+        alert(dest);
+    }
+
+    //查询设备
+    function queryEquipment() {
+        //不管name是否为空，使得搜索条件为空时，查询所有
+        pagehtml(1);
+        return false;
+    }
+
+
+    //切换每页显示数据数
+    function changePageSize(obj) {
+        var pageSize = obj.value;
+        $("#pageSize").val(pageSize);
+        pagehtml(1);
+    }
+
+    // 查看简历
+    function checkOne(equipmentId) {
+        var result = confirm("确定执行此操作？");
+        if (result) {
+
+        } else {
+            return false;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/info",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    alert(resp.msg)
+                } else {
+                    $("#main").load("/views/repair/AllInfo.html");
+
+                    var token = resp.msg;
+
+                    $.ajax({
+                        url: "/company/all",
+                        type: "post",
+                        dataType: "json",
+                        data: {"token": token, "userId": tempMap[equipmentId]},
+                        success: function (data) {
+
+                            //
+                            $("#equList1").empty();
+                            if (data.data.baseInfos == "") {
+                                $("#equList1").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.baseInfos, function (j, val) {
+                                    var date1 = new Date(val.birthday);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.gender
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.phone
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.email
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.cardId
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.birthCity
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.localCity
+                                        + "</td></tr>";
+                                    $("#equList1").append(html);
+                                });
+                            }
+
+                            //
+                            $("#equList2").empty();
+                            if (data.data.educations == "") {
+                                $("#equList2").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.educations, function (j, val) {
+                                    var date1 = new Date(val.start);
+                                    var date2 = new Date(val.end);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.school
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + date2.getFullYear() + "-" + date2.getMonth() + "-" + date2.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.department
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.major
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.degree
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.rank
+                                        + "</td></tr>";
+                                    $("#equList2").append(html);
+                                });
+                            }
+
+                            //
+                            $("#equList3").empty();
+                            if (data.data.practices == "") {
+                                $("#equList3").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.practices, function (j, val) {
+                                    var date1 = new Date(val.start);
+                                    var date2 = new Date(val.end);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + date2.getFullYear() + "-" + date2.getMonth() + "-" + date2.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.content
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.duty
+                                        + "</td></tr>";
+                                    $("#equList3").append(html);
+                                });
+                            }
+
+                            //
+                            $("#equList4").empty();
+                            if (data.data.works == "") {
+                                $("#equList4").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.works, function (j, val) {
+                                    var date1 = new Date(val.start);
+                                    var date2 = new Date(val.end);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.workType
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + date2.getFullYear() + "-" + date2.getMonth() + "-" + date2.getDate()
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.content
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.duty
+                                        + "</td></tr>";
+                                    $("#equList4").append(html);
+                                });
+                            }
+
+                            //
+                            $("#equList5").empty();
+                            if (data.data.scholarships == "") {
+                                $("#equList5").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.scholarships, function (j, val) {
+                                    var date1 = new Date(val.time);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.source
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.level
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td></tr>";
+                                    $("#equList5").append(html);
+                                });
+                            }
+
+                            //
+                            $("#equList6").empty();
+                            if (data.data.matches == "") {
+                                $("#equList6").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.matches, function (j, val) {
+                                    var date1 = new Date(val.time);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.name
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.level
+                                        + "</td>"
+                                        + "<td>"
+                                        + date1.getFullYear() + "-" + date1.getMonth() + "-" + date1.getDate()
+                                        + "</td></tr>";
+
+                                    $("#equList6").append(html);
+                                });
+                            }
+
+
+                            //
+                            $("#equList7").empty();
+                            if (data.data.otherInfos == "") {
+                                $("#equList7").html("<div  id='emptyAlert' class='alert alert-danger'>" +
+                                    "<a href='#' class='close' data-dismiss='alert'>&times;</a>" +
+                                    "<strong>失败！</strong>未查到您搜索的信息。</div>");
+//                                return false;
+                            } else {
+                                $.each(data.data.otherInfos, function (j, val) {
+                                    var date1 = new Date(val.birthday);
+                                    var html;
+                                    html = "<tr>"
+                                        + "<td>"
+                                        + val.englishLevel
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.english
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.city
+                                        + "</td>"
+                                        + "<td>"
+                                        + val.swap
+                                        + "</td></tr>";
+                                    $("#equList7").append(html);
+                                });
+                            }
+
+                        },
+                        error: function (error) {
+                            alert("error");
+                        }
+                    });
+
+                    //基本信息
+
+
+                }
+            },
+            error: function (resp) {
+                alert("访问出错！")
+            }
+        });
+        return false;
+    }
+</script>
+
+</html>
