@@ -5,29 +5,36 @@ $("#login_b").click(function () {
     var pwd = $("#password").val();
     var type = $("input[name='inlineRadioOptions']:checked").val();
 
-    $.ajax({
-        type: "POST",
-        url: "/login",
-        data: {"id": userId, "pwd": pwd, "type": type},
-        dataType: "json",
-        success: function (resp) {
-            if (resp.status != 200) {
+    if (userId != null && pwd != null && type != null) {
+        $.ajax({
+            type: "POST",
+            url: "./login",
+            data: {"id": userId, "pwd": pwd, "type": type},
+            dataType: "json",
+            success: function (resp) {
+                if (resp.status != 200) {
+                    $(".errorMsg").show();
+                    $(".ts").html($(".ts").html() + resp.msg);
+                } else {
+                    $("head").empty();
+                    $("body").empty();
+                    $("body").load("./views/main.html");
+                }
+            },
+            error: function (resp) {
                 $(".errorMsg").show();
-                $(".ts").html($(".ts").html() + resp.msg);
-            } else {
-                window.location.href = "/views/main.html";
+                $(".ts").html($(".ts").html() + "访问出错！");
             }
-        },
-        error: function (resp) {
-            $(".errorMsg").show();
-            $(".ts").html($(".ts").html() + "访问出错！");
-        }
-    });
+        });
+    } else {
+        alert("信息填写不完整！")
+    }
+
 });
 
 //点击注册
 $("#a_register").click(function () {
-    $(".login-box").load("/views/main/signup.html");
+    $(".login-box").load("./views/main/signup.html");
 });
 
 //注册
@@ -48,7 +55,7 @@ $("#register_b").click(function () {
     } else {
         $.ajax({
             type: "POST",
-            url: "/register",
+            url: "./register",
             data: {"id": userId, "pwd": pwd, "type": type},
             dataType: "json",
             success: function (resp) {
@@ -57,7 +64,7 @@ $("#register_b").click(function () {
                     $(".ts").html($(".ts").html() + resp.msg);
                 } else {
                     alert("注册成功");
-                    window.location.href = "/";
+                    window.location.href = "./";
                 }
             },
             error: function (resp) {
@@ -72,63 +79,63 @@ $("#register_b").click(function () {
 //查看所有招聘信息
 function allRecruitment() {
 
-    $("#main").load("/views/equipment/listall.html");
+    $("#main").load("./views/equipment/listall.html");
 }
 
 //我的投递
 function myApply() {
-    $("#main").load("/views/equipment/myList.html");
+    $("#main").load("./views/equipment/myList.html");
 
 }
 
 //基本信息
 function myBaseInfo() {
-    $("#main").load("/views/home/baseInfo.html");
+    $("#main").load("./views/home/baseInfo.html");
 }
 
 //教育经历
 function myEducation() {
 
-    $("#main").load("/views/home/education.html");
+    $("#main").load("./views/home/education.html");
 }
 
 //奖学金
 function myScholarship() {
-    $("#main").load("/views/home/scholarship.html");
+    $("#main").load("./views/home/scholarship.html");
 }
 
 //项目经历
 function myPractice() {
 
-    $("#main").load("/views/home/practice.html");
+    $("#main").load("./views/home/practice.html");
 }
 
 //工作经历
 function myWork() {
-    $("#main").load("/views/home/work.html");
+    $("#main").load("./views/home/work.html");
 }
 
 //其他信息
 function otherInfo() {
-    $("#main").load("/views/home/otherInfo.html");
+    $("#main").load("./views/home/otherInfo.html");
 }
 
 //添加招聘信息
 function addRecruitMent() {
 
-    $("#main").load("/views/repair/addCom.html");
+    $("#main").load("./views/repair/addCom.html");
 }
 
 //管理招聘信息
 function myRecruit() {
 
-    $("#main").load("/views/repair/myRecruitList.html");
+    $("#main").load("./views/repair/myRecruitList.html");
 }
 
 //查看投递信息
 function allApply() {
 
-    $("#main").load("/views/repair/allApply.html");
+    $("#main").load("./views/repair/allApply.html");
 }
 
 

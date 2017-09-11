@@ -5,13 +5,13 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
-<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
-<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
-<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<link type="text/css" href="./css/bootstrap-pagination.min.css" rel="stylesheet"/>
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="./css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap-paginator.min.js"></script>
 
 <div class="row search">
     <div class="col-md-6">
@@ -73,7 +73,7 @@
     function pagehtml(pageNo) {
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -82,7 +82,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/companyApply",
+                        url: "./companyApply",
                         type: "post",
                         dataType: "json",
                         data: {"token": token},
@@ -172,18 +172,18 @@
 
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
                     alert(resp.msg)
                 } else {
-                    $("#main").load("/views/repair/AllInfo.html");
+                    $("#main").load("./views/repair/AllInfo.html");
 
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/company/all",
+                        url: "./company/all",
                         type: "post",
                         dataType: "json",
                         data: {"token": token, "userId": tempMap[equipmentId]},

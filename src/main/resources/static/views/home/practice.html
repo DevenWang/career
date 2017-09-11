@@ -4,13 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
 
-<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+<link type="text/css" href="./css/bootstrap-pagination.min.css" rel="stylesheet"/>
 
-<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="./css/bootstrap-datetimepicker.min.css">
 
 <div class="row search">
     <div class="col-md-6">
@@ -172,7 +172,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -181,7 +181,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/addPractice",
+                        url: "./addPractice",
                         type: "POST",
                         dataType: "json",
                         data: {
@@ -221,7 +221,7 @@
     function pagehtml(pageNo) {
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -230,7 +230,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/practices",
+                        url: "./practices",
                         type: "post",
                         dataType: "json",
                         data: {"token": token},
@@ -321,7 +321,7 @@
         } else {
             return false;
         }
-        $("#main").load("/views/home/practice.html");
+        $("#main").load("./views/home/practice.html");
         return false;
     }
 
@@ -336,7 +336,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -345,7 +345,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/deletePractice",
+                        url: "./deletePractice",
                         type: "POST",
                         data: {
                             "token": token,

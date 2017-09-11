@@ -5,16 +5,17 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
-<link rel="stylesheet" href="/css/bootstrap-chinese-region.css">
-<link type="text/css" href="/css/bootstrap-pagination.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="./css/bootstrap-chinese-region.css">
+<link type="text/css" href="./css/bootstrap-pagination.min.css" rel="stylesheet"/>
 
-<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.min.js"></script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-datetimepicker.min.css">
-<script type="text/javascript" charset="utf-8" src="/js/bootstrap-paginator.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="./css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap-paginator.min.js"></script>
+
 <div class="row search">
     <div class="col-md-6">
         <form action="" method="post">
@@ -202,14 +203,14 @@
         </div>
     </div>
 </form>
-<script type="text/javascript" src="/js/bootstrap-chinese-region.js"></script>
+<script type="text/javascript" src="./js/bootstrap-chinese-region.js"></script>
 <script type="text/javascript">
 
     var tempBase = new Array();
 
     $("#birthCity").click(function () {
-        $.getJSON('/js/sql_areas.json', function (data) {
-            for (var i = 0; i < data.length; i++) {
+        $.getJSON('./js/sql_areas.json', function (data) {
+            for (var i= 0; i < data.length; i++) {
                 var area = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
                 data[i] = area;
             }
@@ -235,7 +236,7 @@
     function pagehtml(pageNo) {
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -243,7 +244,7 @@
                 } else {
                     var token = resp.msg;
                     $.ajax({
-                        url: "/oneBaseInfo",
+                        url: "./oneBaseInfo",
                         type: "post",
                         dataType: "json",
                         data: {"token": token},
@@ -344,42 +345,7 @@
             return false;
         }
 
-        $.ajax({
-            type: "GET",
-            url: "/info",
-            dataType: "json",
-            success: function (resp) {
-                if (resp.status != 200) {
-                    alert(resp.msg)
-                } else {
-                    var token = resp.msg;
-
-                    $.ajax({
-                        url: "/addApply",
-                        type: "POST",
-                        data: {
-                            "workId": equipmentId.toString(),
-                            "token": token
-                        },
-                        dataType: "json",
-                        success: function (data) {
-                            if (data.status == 200) {
-                                alert("添加成功！");
-                                pagehtml($("#currentPage").val());
-                            } else {
-                                alert("添加失败！");
-                            }
-                        },
-                        error: function () {
-                            alert("设置错误");
-                        },
-                    });
-                }
-            },
-            error: function (resp) {
-                alert("访问出错！")
-            }
-        });
+        $("#main").load("./views/home/baseInfo.html");
         return false;
     }
 
@@ -394,7 +360,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -403,7 +369,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/delBaseInfo",
+                        url: "./delBaseInfo",
                         type: "POST",
                         data: {
                             "token": token,
@@ -453,7 +419,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/info",
+            url: "./info",
             dataType: "json",
             success: function (resp) {
                 if (resp.status != 200) {
@@ -462,7 +428,7 @@
                     var token = resp.msg;
 
                     $.ajax({
-                        url: "/addBaseInfo",
+                        url: "./addBaseInfo",
                         type: "POST",
                         dataType: "json",
                         data: {
